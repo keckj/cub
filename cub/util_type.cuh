@@ -33,9 +33,7 @@
 
 #pragma once
 
-#include <iostream>
-#include <limits>
-#include <cfloat>
+#include <cuda/std/limits>
 
 #include "util_macro.cuh"
 #include "util_arch.cuh"
@@ -1036,11 +1034,11 @@ template <>
 struct FpLimits<float>
 {
     static __host__ __device__ __forceinline__ float Max() {
-        return FLT_MAX;
+        return cuda::std::numeric_limits<float>::max();
     }
 
     static __host__ __device__ __forceinline__ float Lowest() {
-        return FLT_MAX * float(-1);
+        return cuda::std::numeric_limits<float>::max() * float(-1);
     }
 };
 
@@ -1048,11 +1046,11 @@ template <>
 struct FpLimits<double>
 {
     static __host__ __device__ __forceinline__ double Max() {
-        return DBL_MAX;
+        return cuda::std::numeric_limits<double>::max();
     }
 
     static __host__ __device__ __forceinline__ double Lowest() {
-        return DBL_MAX  * double(-1);
+        return cuda::std::numeric_limits<double>::max()  * double(-1);
     }
 };
 
@@ -1105,7 +1103,7 @@ template <typename T> struct NumericTraits :            BaseTraits<NOT_A_NUMBER,
 
 template <> struct NumericTraits<NullType> :            BaseTraits<NOT_A_NUMBER, false, true, NullType, NullType> {};
 
-template <> struct NumericTraits<char> :                BaseTraits<(std::numeric_limits<char>::is_signed) ? SIGNED_INTEGER : UNSIGNED_INTEGER, true, false, unsigned char, char> {};
+template <> struct NumericTraits<char> :                BaseTraits<(cuda::std::numeric_limits<char>::is_signed) ? SIGNED_INTEGER : UNSIGNED_INTEGER, true, false, unsigned char, char> {};
 template <> struct NumericTraits<signed char> :         BaseTraits<SIGNED_INTEGER, true, false, unsigned char, signed char> {};
 template <> struct NumericTraits<short> :               BaseTraits<SIGNED_INTEGER, true, false, unsigned short, short> {};
 template <> struct NumericTraits<int> :                 BaseTraits<SIGNED_INTEGER, true, false, unsigned int, int> {};

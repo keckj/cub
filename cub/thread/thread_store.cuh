@@ -33,8 +33,6 @@
 
 #pragma once
 
-#include <cuda.h>
-
 #include "../util_ptx.cuh"
 #include "../util_type.cuh"
 #include "../util_namespace.cuh"

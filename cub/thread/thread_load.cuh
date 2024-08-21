@@ -33,10 +33,6 @@
 
 #pragma once
 
-#include <cuda.h>
-
-#include <iterator>
-
 #include "../util_ptx.cuh"
 #include "../util_type.cuh"
 #include "../util_namespace.cuh"
@@ -104,10 +100,17 @@ enum CacheLoadModifier
  * \tparam MODIFIER             <b>[inferred]</b> CacheLoadModifier enumeration
  * \tparam InputIteratorT       <b>[inferred]</b> Input iterator type \iterator
  */
+
+template <typename Iterator>
+using RetType = typename cuda::std::remove_cv<typename cuda::std::remove_reference<decltype(*cuda::std::declval<Iterator>())>::type>::type;
+
 template <
     CacheLoadModifier MODIFIER,
     typename InputIteratorT>
-__device__ __forceinline__ typename std::iterator_traits<InputIteratorT>::value_type ThreadLoad(InputIteratorT itr);
+__device__ __forceinline__ RetType<InputIteratorT>
+ThreadLoad(InputIteratorT itr) {
+    // Generic implementation here if needed (or leave it undefined if meant to be specialized)
+}
 
 
 //@}  end member group
@@ -309,7 +312,7 @@ struct IterateThreadLoad<MAX, MAX>
  * ThreadLoad definition for LOAD_DEFAULT modifier on iterator types
  */
 template <typename InputIteratorT>
-__device__ __forceinline__ typename std::iterator_traits<InputIteratorT>::value_type ThreadLoad(
+__device__ __forceinline__ RetType<InputIteratorT> ThreadLoad(
     InputIteratorT          itr,
     Int2Type<LOAD_DEFAULT>  /*modifier*/,
     Int2Type<false>         /*is_pointer*/)
@@ -409,24 +412,6 @@ __device__ __forceinline__ T ThreadLoad(
 
     return *reinterpret_cast<T*>(words);
 }
-
-
-/**
- * ThreadLoad definition for generic modifiers
- */
-template <
-    CacheLoadModifier MODIFIER,
-    typename InputIteratorT>
-__device__ __forceinline__ typename std::iterator_traits<InputIteratorT>::value_type ThreadLoad(InputIteratorT itr)
-{
-    // Apply tags for partial-specialization
-    return ThreadLoad(
-        itr,
-        Int2Type<MODIFIER>(),
-        Int2Type<IsPointer<InputIteratorT>::VALUE>());
-}
-
-
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

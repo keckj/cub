@@ -36,7 +36,6 @@
 
 #pragma once
 
-#include <stdio.h>
 #include "util_namespace.cuh"
 #include "util_arch.cuh"
 

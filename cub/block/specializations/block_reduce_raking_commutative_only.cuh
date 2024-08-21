@@ -95,9 +95,9 @@ struct BlockReduceRakingCommutativeOnly
     /// Shared memory storage layout type
     struct _TempStorage
     {
-        union
+        union _
         {
-            struct
+            struct __
             {
                 typename WarpReduce::TempStorage        warp_storage;        ///< Storage for warp-synchronous reduction
                 typename BlockRakingLayout::TempStorage raking_grid;         ///< Padded threadblock raking grid
